@@ -18,6 +18,13 @@ class SIR:
     def basic_sir(self, t, y):
         S,I,R = y
 
+        if np.linalg.norm(S) < 5e-1:
+            S = 0
+        if np.linalg.norm(I) < 5e-1:
+            I = 0
+        if np.linalg.norm(R) < 5e-1:
+            R = 0
+
         dSdt = -self.beta*S*I
         dIdt = self.beta*S*I - self.gamma*I
         dRdt = self.gamma*I
