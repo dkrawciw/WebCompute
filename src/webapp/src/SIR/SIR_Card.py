@@ -28,12 +28,12 @@ def SIR_Card() -> html:
             Sir_Input(label="Beta", id="sir_basic_beta", default_value=0.1),
             Sir_Input(label="Gamma", id="sir_basic_gamma", default_value=0.1),
 
-            Sir_Input(label="Time Length (days)", id="sir_basic_tlength", default_value=100),
+            Sir_Input(label="End Time (days)", id="sir_basic_tlength", default_value=100),
+            Sir_Input(label="Number of Time Steps (int)", id="sir_basic_n_steps", default_value=10000),
 
             dbc.Button("Simulate", id="sir_basic_btn"),
-
-            html.Div([], id="sir_basic_output"),
         ]),
+        html.Div([], id="sir_basic_output"),
     ])
 
 @callback(
@@ -46,17 +46,19 @@ def SIR_Card() -> html:
         State("sir_basic_beta", "value"),
         State("sir_basic_gamma", "value"),
         State("sir_basic_tlength", "value"),
+        State("sir_basic_n_steps", "value"),
     ],
     prevent_initial_call=True,
 )
 def simulate_basic_sir(sir_basic_btn, sir_basic_S_IC,
                        sir_basic_I_IC, sir_basic_R_IC,
                        sir_basic_beta, sir_basic_gamma,
-                       sir_basic_tlength):
+                       sir_basic_tlength, sir_basic_n_steps):
     new_sir = SIR()
     new_sir.beta = sir_basic_beta
     new_sir.gamma = sir_basic_gamma
     new_sir.t_length = sir_basic_tlength
+    new_sir.n_steps = sir_basic_n_steps
 
     new_sir.S0 = sir_basic_S_IC
     new_sir.I0 = sir_basic_I_IC
