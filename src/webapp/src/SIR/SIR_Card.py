@@ -1,10 +1,5 @@
 from dash import html, dcc, callback, Input, Output, State
 import dash_bootstrap_components as dbc
-from .SIR import SIR_basic
-from scipy.integrate import solve_ivp
-import plotly.express as px
-import pandas as pd
-import numpy as np
 
 def Sir_Input(label: str, id: str, placeholder:str = "", default_value: float = 0):
     return html.Div([

@@ -1,7 +1,11 @@
 import numpy as np
+from scipy.integrate import solve_ivp
 
 class SIR:
-    def __init__(self, S0: float, I0: float, R0: float, beta: float, gamma: float, t_length: float):
+    def __init__(self, S0: float = 100,
+                 I0: float = 1, R0: float = 0,
+                 beta: float = 0.05, gamma: float = 0.05, 
+                 t_length: float = 100):
         self.S0 = S0
         self.I0 = I0
         self.R0 = R0
@@ -11,16 +15,20 @@ class SIR:
 
         self.t_length = t_length
 
-        def diffeq(t, y):
-            S,I,R = y
+    def basic_sir(self, t, y):
+        S,I,R = y
 
-            
+        dSdt = -self.beta*S*I
+        dIdt = self.beta*S*I - self.gamma*I
+        dRdt = self.gamma*I
 
-def SIR_basic(t, y, beta=0, gamma=0):
-    S,I,R = y
+        return np.array([dSdt, dIdt, dRdt])
 
-    dSdt = -beta * S * I
-    dIdt = beta * S * I - gamma * I
-    dRdt = gamma * I
+    def solve_basic_sir(self):
+        t_span = [0, self.t_length]
+        y0 = np.array([ self.S0, self.I0, self.R0 ])
+        t_eval = np.linspace( 0, self.t_length )
 
-    return [ dSdt, dIdt, dRdt ]
+        soln = solve_ivp( fun=self.basic_sir, t_span=t_span, y0=y0, t_eval=t_eval )
+
+        return soln
