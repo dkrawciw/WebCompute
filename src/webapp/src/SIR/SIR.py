@@ -33,10 +33,23 @@ class SIR:
         return np.array([dSdt, dIdt, dRdt])
 
     def solve_basic_sir(self):
-        t_span = [0, self.t_length]
         y0 = np.array([ self.S0, self.I0, self.R0 ])
-        t_eval = np.linspace( 0, self.t_length, self.n_steps )
+        t = np.linspace( 0, self.t_length, self.n_steps + 1 )
 
-        soln = solve_ivp( fun=self.basic_sir, t_span=t_span, y0=y0, t_eval=t_eval )
+        y = np.zeros((3,self.n_steps + 1))
+        y[:,0] = np.array([ self.S0, self.I0, self.R0 ])
+        
+        h = self.t_length / (self.n_steps + 1)
 
-        return soln
+        for i in range(1,len(t)):
+            t0 = t[i-1]
+            y0 = y[:,i-1]
+
+            K1 = h * self.basic_sir(t0,y0)
+            K2 = h * self.basic_sir(t0 + h/2,y0 + K1/2)
+            K3 = h * self.basic_sir(t0 + h/2,y0 + K2/2)
+            K4 = h * self.basic_sir(t0 + h,y0 + K3)
+
+            y[:,i] = y0 + K1/6 + K2/3 + K3/3 + K4/6
+
+        return [t, y]
